@@ -30,5 +30,17 @@ public abstract class Parser {
 			throw new ParsingException("File not found. Shouldn't happen, file already found earlier.");
 		}
 	}
+	
+	/**
+	 * Enlève les guillemets d'une String
+	 * @param s
+	 * @return la chaine sans guillemets
+	 */
+	protected static String enleveGuillemets(String s) {
+		if(s.indexOf('"') == 0 && s.lastIndexOf('"') == s.length()-1) {
+			return s.substring(1, s.length()-1);
+		}
+		return s;
+	}
 
 }

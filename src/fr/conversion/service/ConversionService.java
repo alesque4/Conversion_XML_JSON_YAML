@@ -25,10 +25,6 @@ public class ConversionService extends Service {
 		pathIn = args[2];
 		pathOut = args[3];
 		
-		System.out.println("Ext : "+extension);
-		System.out.println("pathIn : "+pathIn);
-		System.out.println("pathOut : "+pathOut);
-		
 		//Initialisation des fichiers
 		fileIn = new File(pathIn);
 		if(!fileIn.canRead()) {
