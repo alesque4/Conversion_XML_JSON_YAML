@@ -1,0 +1,19 @@
+Creer un programme avec les fonctionalités suivantes :
+- Transforme un fichier csv en fichier yml
+- Transforme un fichier csv en fichier json
+- Transforme un fichier json en fichier yml
+- Transforme un fichier json en fichier xml
+- Transforme un fichier xml en fichier json
+- Transforme un fichier xml en fichier yml
+
+La commande suivante affiche les options possibles :
+converter --help
+Usage : converter <options> origin destination
+
+options :
+  -o format : output format for the destination file. Formats are xml, json, yaml
+
+Voter programme doit au minimum utiliser :
+- Les "generics"
+- Les annotations
+- Le polymorphisme
