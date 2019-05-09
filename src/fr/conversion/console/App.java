@@ -1,8 +1,10 @@
+/**
+ * Outil de conversion de fichiers entre XML, JSON et YAML
+ * @author Alexandre MEUR
+ */
 package fr.conversion.console;
 
-import java.io.File;
-
-import fr.conversion.model.Conversion;
+import fr.conversion.exception.ConversionException;
 import fr.conversion.service.Service;
 import fr.conversion.service.ServiceFactory;
 
@@ -11,6 +13,7 @@ public class App {
 	public static void main(String[] args) {
 		//Scanner input = new Scanner(System.in);
 		
+		/*
 		File f1 = new File("bla/bla/fichier.xml");
 		File f2 = new File("bla/bla/fichier.yml");
 		File f3 = new File("bla/fic.json");
@@ -20,6 +23,7 @@ public class App {
 		
 		System.out.println("c1 input : "+c1.getInputType());
 		System.out.println("c2 input : "+c2.getInputType());
+		*/
 		
 		//Choix du service en fonction des arguments
 		ServiceFactory factory = new ServiceFactory();
@@ -27,9 +31,13 @@ public class App {
 		
 		//Lancement du service si possible
 		if(service != null) {
-			service.executeUC(args);
+			try {
+				service.executeUC(args);
+			} catch (ConversionException e) {
+				System.out.println(e.getMessage());
+			}
 		}else {
-			System.out.println("Couldn't launch conversion");
+			System.out.println("Couldn't launch conversion.");
 			System.out.println("Use converter --help");
 		}
 		
