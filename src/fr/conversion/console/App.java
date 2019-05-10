@@ -13,7 +13,7 @@ public class App {
 	public static void main(String[] args) {
 
 		ServiceFactory factory = new ServiceFactory();
-		Service service = factory.serviceFactory(args);
+		Service service = factory.serviceFactory(args);		
 		
 		//Lancement du service si possible
 		if(service != null) {

@@ -2,45 +2,120 @@ package fr.conversion.service.parse;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.HashMap;
 
 import fr.conversion.exception.ParsingException;
 import fr.conversion.model.Balise;
 
 public abstract class Parser {
-	@SuppressWarnings("unused")
-	private File file;
+	
+	private FileReader reader;
+	private char lastChar;
 	
 	public abstract ArrayList<Balise> parse() throws ParsingException;
+	public abstract Balise getNextBalise(String newName) throws ParsingException;
+	public abstract String getBaliseName() throws ParsingException;
+	public abstract HashMap<String, String> getBaliseChamps() throws ParsingException;
 	
 	public Parser(File f) {
-		file = f;
+		try {
+			setReader(new FileReader(f));
+		} catch (FileNotFoundException e) {
+			System.out.println("Can't find file to parse.");
+			setReader(null);
+		}
+		setLastChar('a');
+	}
+	
+	public Parser(String path) {
+		try {
+			setReader(new FileReader(new File(path)));
+		} catch (FileNotFoundException e) {
+			System.out.println("Can't find file to parse.");
+			setReader(null);
+		}
+		setLastChar('a');
 	}
 	
 	/**
-	 * Fournit un scanner sur le fichier à parser
-	 * @return le scanner
+	 * Return the next character in the reader
+	 * @param reader
+	 * @return the next character
 	 * @throws ParsingException
 	 */
-	protected Scanner getScanner() throws ParsingException {
+	protected char getNextChar() throws ParsingException {
+		int i;
 		try {
-			return new Scanner(file);
-		} catch (FileNotFoundException e) {
-			throw new ParsingException("File not found. Shouldn't happen, file already found earlier.");
+			i = reader.read();
+		} catch (IOException e) {
+			throw new ParsingException("I/O Problem while reading character : "+e.getMessage());
+		}
+		
+		if(i == -1) {
+			lastChar = '\0';
+			return lastChar;
+		}else {
+			lastChar = (char) i;
+			return lastChar;
 		}
 	}
 	
 	/**
-	 * Enlève les guillemets d'une String
-	 * @param s
-	 * @return la chaine sans guillemets
+	 * bouge le reader jusqu'à ce qu'on atteigne un de char souhaités
+	 * @param reader
+	 * @param tabChar a tab of char to reach
+	 * @throws ParsingException 
+	 * @return Indique si on a atteind un char demandé
 	 */
-	protected static String enleveGuillemets(String s) {
-		if(s.indexOf('"') == 0 && s.lastIndexOf('"') == s.length()-1) {
-			return s.substring(1, s.length()-1);
+	public boolean moveReaderUntil(char[] tabChar) throws ParsingException {
+		char currentChar = getLastChar();
+		
+		for(char c : tabChar) {
+			if(currentChar == c) return true;
+			else if(currentChar == '\0') return false;
 		}
-		return s;
+		while(true){
+			currentChar = getNextChar();
+			for(char c : tabChar) {
+				if(currentChar == c) return true;
+				else if(currentChar == '\0') return false;
+			}
+		}
 	}
-
+	
+	/**
+	 * Return the text in the reader until one of the characters in tabChar is reached
+	 * (last char not included in result)
+	 * @param reader
+	 * @param tabChar a tab of char to reach
+	 * @throws ParsingException 
+	 * @return Indique si le traitement s'est bien passé
+	 */
+	public String getReaderTextUntil(char[] tabChar) throws ParsingException {
+		char currentChar = getLastChar();
+		String res = "";
+			
+		do {
+			currentChar = getNextChar();
+			for(int i=0; i<tabChar.length; i++) {
+				if(currentChar == tabChar[i] || currentChar == '\0') return res;
+			}
+			res = res + currentChar;
+		}while(true);
+	}
+	public FileReader getReader() {
+		return reader;
+	}
+	private void setReader(FileReader reader) {
+		this.reader = reader;
+	}
+	public char getLastChar() {
+		return lastChar;
+	}
+	private void setLastChar(char lastChar) {
+		this.lastChar = lastChar;
+	}
 }
